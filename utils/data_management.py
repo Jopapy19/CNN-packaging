@@ -62,12 +62,5 @@ def manage_input_data(input_image):
 
     # Datapreparation image
     final_image = np.expand_dims(resized_input_image, axis=0)
-    return final_image
-
-
-
-
-    
-
-        
+    return final_image        
 
