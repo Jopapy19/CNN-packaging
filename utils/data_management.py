@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-import config
+import utils.config as config
 
 def train_valid_generator(
     IMAGE_SIZE = config.IMAGE_SIZE[:-1],
@@ -32,7 +32,7 @@ def train_valid_generator(
             rotation_range=40,
             horizontal_flip=True,
             width_shift_range=0.2,
-            height_range=0.2,
+            height_shift_range=0.2,
             shear_range=0.2,
             zoom_range=0.2,
             **datagen_kwargs
@@ -58,9 +58,10 @@ def manage_input_data(input_image):
     resized_input_image = tf.image.resize(
         images,
         size,
-        preserve_aspect_ratio=False)
+        preserve_aspect_ratio=False
+        )
 
     # Datapreparation image
-    final_image = np.expand_dims(resized_input_image, axis=0)
-    return final_image        
+    final_img = np.expand_dims(resized_input_image, axis=0)
+    return final_img      
 

@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-import config
+import utils.config as config
 
 
 def save_vgg_16_model(input_shape=config.IMAGE_SIZE):
@@ -56,8 +56,8 @@ def custom_model(CLASSES=config.CLASSES, freeze_all=True, freeze_till=None):
 def callbacks(base_dir="."):
 
     # Tensorboard callbacks
-    based_log_dir = config.BASED_LOG_DIR
-    tensorboard_log_dir = os.path.join(based_log_dir, "tensorboard_log_dir")
+    base_log_dir = config.BASE_LOG_DIR
+    tensorboard_log_dir = os.path.join(base_log_dir, "tensorboard_log_dir")
     os.makedirs(tensorboard_log_dir, exist_ok=True) #Ignore if already exits
 
 
