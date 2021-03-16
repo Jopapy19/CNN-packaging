@@ -46,7 +46,7 @@ def train():
     #Saving our model
     model_file_path = get_unique_model_name()
     my_model.save(model_file_path)
-    print(f"Saving model\n ==> {model_file_path}")
+    print(f"Saving model at\n ==>{model_file_path}")
 
 
 

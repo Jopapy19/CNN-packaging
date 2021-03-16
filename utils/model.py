@@ -23,7 +23,7 @@ def load_base_model():
 def custom_model(CLASSES=config.CLASSES, freeze_all=True, freeze_till=None):
     model = load_base_model() #loaded base model
     
-    #Freeze weights...
+    # Freeze weights...
     if freeze_all:
         for layer in model.layers:
             layer.trainable=False
@@ -76,5 +76,4 @@ def callbacks(base_dir="."):
     return callback_list
 
 if __name__ == '__main__':
-    
     custom_model()
