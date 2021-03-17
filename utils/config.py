@@ -1,8 +1,8 @@
 import os
 
-DATA_DIR = os.path.join("data", "Images") # Searching dataset
+DATA_DIR = os.path.join("data", "GenderImages") # Searching dataset
 IMAGE_SIZE = (224, 224, 3)
-BATCH_SIZE = 16
+BATCH_SIZE = 32
 EPOCHS = 10
 CLASSES = 2
 TRAINED_MODEL_DIR = os.path.join("VGGmodel", "models")
