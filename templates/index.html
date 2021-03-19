@@ -7,12 +7,32 @@ Package
 
 {% block custom_css %}
 <!-- Custom CSS -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<title>Jopapy19</title>
+
 {% endblock custom_css %}
 
-
 {% block body %}
-<h1>Hello Flask </h1>
+
+<div class="container">
+<!--h1>Hello {{ name.firstName }}! Welcome to {{ workat }} </h1-->
+<h1>A classifer</h1>
+<!-- <form action="/predict" method="post">-->
+<input id="image-selector" type="file">
+<button id="predict-button">Predict</button>
+<!--</form>-->
+<p style="font-weight:bold">Predictions</p>
+<p>Men: <span id="men-prediction"></span></p>
+<p>Women: <span id="women-prediction"></span></p>
+<img id="selected-image" src=""/>
+
+</div>
+<h5 class=".text-muted copyright">&copy; Jopapy19</h5>
+<!-- <form action="/" method="post">
+<input type="text" name="name" id="">
+<button type="submit">Submit</button>
+</form> -->
 {% endblock body %}
 
 {% block custom_js %}
