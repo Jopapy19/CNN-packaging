@@ -2,9 +2,9 @@ from __future__ import division, print_function
 
 # coding=utf-8
 import os
-# import sys
-# import glob
-# import re
+import sys
+import glob
+import re
 import numpy as np
 
 # keras
@@ -26,6 +26,8 @@ from PIL import Image
 
 
 import warnings
+from tensorboard.summary.v1 import image
+from tensorflow.python.data.experimental.ops.optimization import model
 warnings.filterwarnings("ignore")
 
 # define global paths for Image
@@ -46,13 +48,14 @@ def allowed_file(filename):
         filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Save & Load Model
-
-
 def get_model():
-    model_path = 'static/models/VGG16_model_at_20210317_083528.h5'
+    model_path = 'static/models/VGG16_model_at_20210319_235059.h5'
     model = load_model(model_path)
     print("* Model loaded!")
 
+    # Load your trained model
+    model = load_model(model_path)
+    model._make_predict_function()          # Necessary
 
 # Preprocessing function
 def preprocess_image(image, target_size):
@@ -66,9 +69,24 @@ def preprocess_image(image, target_size):
     print(" *Loading Keras model...")
     get_model()
 
+# Predict model
+def model_predict(img_path, model):
+    img = image.load_img(img_path, target_size=(224, 224))
+
+    # Preprocessing the image
+    x = image.img_to_array(img)
+    # x = np.true_divide(x, 255)
+    x = np.expand_dims(x, axis=0)
+
+    # Be careful how your trained model deals with the input
+    # otherwise, it won't make correct prediction!
+    x = preprocess_input(x)
+
+    preds = model.predict(x)
+    return preds
+
+
 # Upload file
-
-
 @app.route("/upload/<filename>")
 def uploaded_file(filename):
     fileURL = os.path.join("uploads", filename)
@@ -92,8 +110,36 @@ def upload_file():
             return redirect(request.url)
         if f and allowed_file(f.filename):
             filename = secure_filename(f.filename)
-            f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file_path = f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('uploaded_file', filename=filename))
+
+         # Make model prediction
+        pred = preprocess_image(file_path, model)
+
+        #Read prediction
+    #     pred = model_predict(filename, model)
+    #     pred_class = decode_predictions(pred, top=1)
+    #     result = str(pred_class[0][0][1])
+
+    #     return result
+    # return None
+    
+
+   
+# # Read Prediction
+@app.route("/", methods=["POST"])
+@cross_origin()
+def predict():
+    # print("request", request)
+    message = request.get_json()
+    # print("### message", message)
+    encoded = message['image'].split(",")[-1]
+    decoded = base64.b64decode(encoded)
+    image = Image.open(io.BytesIO(decoded))
+    input_image_size = (224, 224)
+    processed_image = preprocess_image(image, target_size=input_image_size)
+    print("######### processed_img size", processed_image.shape)
+    prediction = model.predict(processed_image).tolist()
 
     response = {
         'prediction': {
@@ -103,21 +149,6 @@ def upload_file():
     }
     return jsonify(response)
 
-
-# Prediction
-# @app.route("/predict", methods=["POST"])
-# @cross_origin()
-# def predict():
-#     # print("request", request)
-#     message = request.get_json()
-#     # print("### message", message)
-#     encoded = message['image'].split(",")[-1]
-#     decoded = base64.b64decode(encoded)
-#     image = Image.open(io.BytesIO(decoded))
-#     input_image_size = (224, 224)
-#     processed_image = preprocess_image(image, target_size=input_image_size)
-#     print("######### processed_img size", processed_image.shape)
-#     prediction = model.predict(processed_image).tolist()
 
 
 # Main
